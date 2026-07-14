@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Porsche Enterprise Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+  <div class="grid-veil"></div>
+
+  <!-- Estrutura principal do painel: cabeçalho, filtros, métricas, gráficos, insights e tabela -->
+  <main class="wrap">
+
+    <!-- Cabeçalho com identidade da marca e contexto da base de dados -->
+    <header>
+      <div class="brand">
+        <div class="crest"><span>P</span></div>
+        <div class="brand-text">
+          <p class="eyebrow">Rede de Concessionárias · EUA</p>
+          <h1>Enterprise <em>Dashboard</em></h1>
+        </div>
+      </div>
+      <div class="clock">
+        <div><b>100</b> vendas registradas · 2020–2027</div>
+        <div>Base de Dados — Porsche DIO</div>
+      </div>
+    </header>
+
+    <!-- Barra de filtros para segmentar os dados exibidos no dashboard -->
+    <div class="filterbar">
+      <div class="field">
+        <label for="f-model">Modelo (Família)</label>
+        <select id="f-model">
+          <option value="">Todos os modelos</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-year">Ano do modelo</label>
+        <select id="f-year">
+          <option value="">Todos os anos</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-city">Cidade</label>
+        <select id="f-city">
+          <option value="">Todas as cidades</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-pay">Forma de Pagamento</label>
+        <select id="f-pay">
+          <option value="">Todas as formas</option>
+        </select>
+      </div>
+      <button class="reset-btn" id="reset-btn">↺ Limpar filtros</button>
+      <div class="result-count" id="result-count"></div>
+    </div>
+
+    <!-- KPIs principais: receita, unidades vendidas, ticket médio e ano líder -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <p class="kpi-label">Receita total</p>
+        <p class="kpi-value" id="kpi-revenue">R$ 0</p>
+        <p class="kpi-sub" id="kpi-revenue-sub">—</p>
+      </div>
+      <div class="kpi-card">
+        <p class="kpi-label">Unidades vendidas</p>
+        <p class="kpi-value" id="kpi-units">0<span class="unit">un.</span></p>
+        <p class="kpi-sub" id="kpi-units-sub">—</p>
+      </div>
+      <div class="kpi-card">
+        <p class="kpi-label">Ticket médio</p>
+        <p class="kpi-value" id="kpi-avg">R$ 0</p>
+        <p class="kpi-sub" id="kpi-avg-sub">—</p>
+      </div>
+      <div class="kpi-card gauge-card">
+        <svg class="gauge-svg" id="gauge-svg" width="86" height="86" viewBox="0 0 100 100"></svg>
+        <div class="gauge-info">
+          <p class="kpi-label">Ano Líder de Vendas</p>
+          <div class="gauge-year" id="gauge-year">—</div>
+          <p class="gauge-count" id="gauge-count">—</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seção 01: visualizações principais do volume de vendas -->
+    <div class="section-title">
+      <span class="idx">01</span>
+      <div>
+        <h2>Volume por cidade e modelo</h2>
+        <p>Distribuição das unidades vendidas entre as principais praças e modelos</p>
+      </div>
+    </div>
+
+    <!-- Bloco com os gráficos principais: distribuição por cidade e evolução por ano -->
+    <div class="chart-grid">
+      <div class="panel">
+        <h3>Todas as cidades × modelo campeão</h3>
+        <p class="panel-sub" id="city-chart-sub">Todas as cidades do recorte, coloridas pela família de modelo mais
+          vendida em cada uma</p>
+        <div class="chart-scroll">
+          <div class="chart-holder" id="city-chart-holder"><canvas id="chart-city"></canvas></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Número de Vendas por Ano</h3>
+        <p class="panel-sub">Unidades vendidas por ano-modelo no recorte atual</p>
+        <div class="chart-holder"><canvas id="chart-year"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Seção 02: insights por cidade com destaque para o modelo campeão -->
+    <div class="section-title">
+      <span class="idx">02</span>
+      <div>
+        <h2>Campeões de volume por cidade</h2>
+        <p>Modelo mais vendido em cada praça, na mesma ordem de volume do gráfico 01, sobre o recorte filtrado</p>
+      </div>
+    </div>
+
+    <!-- Cards de insights com o modelo mais vendido em cada cidade -->
+    <div class="insights-scroll">
+      <div class="insights-grid" id="insights-grid"></div>
+    </div>
+
+    <!-- Seção 03: tabela detalhada com todos os registros de vendas -->
+    <div class="section-title">
+      <span class="idx">03</span>
+      <div>
+        <h2>Registro de vendas</h2>
+        <p>Clique nos cabeçalhos para ordenar · <span id="table-count-label"></span></p>
+      </div>
+    </div>
+
+    <!-- Tabela com registros de vendas e suporte à ordenação por coluna -->
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table id="sales-table">
+          <thead>
+            <tr>
+              <th data-key="id">ID</th>
+              <th data-key="date">Data</th>
+              <th data-key="customer">Cliente</th>
+              <th data-key="model">Modelo</th>
+              <th data-key="modelYear">Ano</th>
+              <th data-key="price">Preço</th>
+              <th data-key="mileage">Km Rodados</th>
+              <th data-key="payMethod">Pagamento</th>
+              <th data-key="city">Cidade</th>
+              <th data-key="status">Status</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Rodapé com fonte dos dados, links externos e informações de contexto -->
+    <footer class="footer">
+      <p class="footer-text">
+        Painel gerado a partir da <span><a
+            href="https://1drv.ms/x/c/d9c47ef1e7f303fc/IQBcOyJQpT5wSa6FW9vKVNBvAQKcZ6cKu140obomGQL23hs?e=sudA99"
+            target="_blank" aria-label="Planilha Base de Dados Porsche">Planilha Base de Dados Porsche</a></span> ·
+            DIO - dados de demonstração, não representam volumes reais de vendas Porsche.
+      </p>
+
+      <div class="social-icons">
+        <a href="https://github.com/amanda-drong" target="_blank" aria-label="GitHub">
+          <i class="fab fa-github"></i>
+        </a>
+
+        <a href="https://www.linkedin.com/in/amanda-camargo-drong" target="_blank" aria-label="LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+
+        <a href="mailto:amanda.c.drong@gmail.com" aria-label="E-mail">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Script principal responsável por carregar os dados, aplicar filtros e renderizar o dashboard -->
+  <script src="script.js"></script>
+</body>
+
+</html>
