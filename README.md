@@ -25,11 +25,12 @@ A aplicação permite analisar indicadores de desempenho (KPIs), explorar os dad
 ## Base de dados
 
 Os dados utilizados foram fornecidos durante a aceleração e correspondem à **[Planilha Base de Dados Porsche DIO](https://1drv.ms/x/c/d9c47ef1e7f303fc/IQBcOyJQpT5wSa6FW9vKVNBvAQKcZ6cKu140obomGQL23hs?e=sudA99)**, utilizada exclusivamente para fins educacionais.
+
 Projeto desenvolvido para fins de estudo, prática de Business Intelligence, visualização de dados e composição de portfólio.
 
 ---
 
-## 🚀 Acesse o projeto
+## Acesse o projeto
 
 **Explore o dashboard**  
 [![Acessar Dashboard](https://img.shields.io/badge/Acessar%20Dashboard-444444?style=for-the-badge&logo=github&logoColor=white)](https://amanda-drong.github.io/Porsche_Enterprise_Dashboard/)
